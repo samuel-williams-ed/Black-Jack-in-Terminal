@@ -39,9 +39,9 @@ public class BlackJack {
         return ( player_to_check.getTotal() > 21 );
     }
     public boolean didPayerWin(){
-        int wager = this.getPot() *5;
-        System.out.println(" ~~ debug: didPlayerWin: pot = " + Integer.toString(wager));
-//        doesn't handle aces yet
+        int wager = this.getPot();
+//        System.out.println(" ~~ debug: didPlayerWin: pot = " + Integer.toString(wager));
+//        TODO: doesn't handle aces yet
         if (this.player.getTotal() > this.dealer.getTotal() || this.dealer.getTotal() > 21){
             dealer.narratorAnnounce("You won!");
             player.addCash( wager );
@@ -56,13 +56,15 @@ public class BlackJack {
         }
         return false;
     }
-    public void pauseAndAnnounce(Participant player, String vocalisation, int waitTime){
+
+//      Timer methods
+    public void pauseAndAnnounce(Participant player, String vocalisation, int delay){
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 player.announce(vocalisation);
             }
-        }, waitTime);
+        }, delay);
     }
     public void pauseAndNarrate(String vocalisation, int delay){
         new Timer().schedule(new TimerTask() {
@@ -97,6 +99,7 @@ public class BlackJack {
         dealer.dealBlackJack(this.player, burnPile);
         // 4000
         pauseAndAnnounce(dealer, "Place bets: House blind £5 ", 4000);
+        this.addToPot(5);
         pauseAndNarrate(" (enter number) ", 4100);
         // wait for user input...
         this.addToPot(player.getPlayerBet());
@@ -165,8 +168,10 @@ public class BlackJack {
         dealer.narratorAnnounce("Welcome to the digital Casino. Tell us a name for your badge and we'll get you started. \n ( enter name )");
         String userName = player.askForPlayersName();
         player.setName(userName);
-//        track pot
-//        while  user wants another round
+
+//        TODO: track pot
+//        TODO: while, user wants another round
+
         dealer.narratorAnnounce("Would you like to play? ( y / n ) ");
 
         while(player.playerPlays() && !checkIfBust(player)){
